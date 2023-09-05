@@ -6,7 +6,7 @@ const divide = (a, b) => a / b;
 let numOne = 0;
 let numTwo = 0;
 let operator = '';
-let ans = null;
+let numOperators = 0;
 
 let operate = (a, b, operator) => {
   if (operator == '+') return add(a, b);
@@ -17,24 +17,42 @@ let operate = (a, b, operator) => {
 let getAnswer = () => {
   [numOne, numTwo] = getDisplayValue().split(/[\+\-\x\/]/);
   operator = getDisplayValue().match(/[\+\-\x\/]/);
-  ans = operate(parseInt(numOne), parseInt(numTwo), operator);
-  return ans;
+  return operate(parseInt(numOne), parseInt(numTwo), operator);
 };
 
 let btnPress = btn => {
-  if (ans) {
-    clearDisplay();
-    ans = null;
-  }
   let value = btn.target.textContent;
-  if (value == 'clear') return clearDisplay();
-  writeDisplay(value);
-  if (value == '=') writeDisplay(getAnswer());
+  if (value == 'CLEAR') return clearDisplay();
+  
+  if (btn.target.classList.contains('operator')) {
+    numOperators += 1;
+  }
+
+  if (value == '=' || numOperators == 2) {
+    let ans = getAnswer();
+    writeHistory(ans);
+    clearDisplay();
+    writeDisplay(ans);
+    if (value != '=') {
+      writeDisplay(value);
+      numOperators += 1;
+    }
+  } else {
+    writeDisplay(value);
+  } 
 };
 
 let writeDisplay = value => document.querySelector('#display').textContent += value;
 
-let clearDisplay = () => document.querySelector('#display').textContent = '';
+let clearDisplay = () => {
+  document.querySelector('#display').textContent = '';
+  numOperators = 0;
+};
+
+let writeHistory = ans => {
+  let expression = document.querySelector('#display').textContent;
+  document.querySelector('#history').textContent = `${expression} = ${ans}`;
+};
 
 let getDisplayValue = () => document.querySelector('#display').textContent;
 
