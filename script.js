@@ -5,7 +5,6 @@ const divide = (a, b) => a / b;
 
 let numOne = 0;
 let numTwo = 0;
-let operator = '';
 let numOperators = 0;
 
 let operate = (a, b, operator) => {
@@ -16,8 +15,17 @@ let operate = (a, b, operator) => {
 
 let getAnswer = () => {
   [numOne, numTwo] = getDisplayValue().split(/[\+\-\x\/]/);
-  operator = getDisplayValue().match(/[\+\-\x\/]/);
-  return operate(parseInt(numOne), parseInt(numTwo), operator);
+  let opr = getDisplayValue().match(/[\+\-\x\/]/);
+  if (
+    numOne == undefined|| numTwo == undefined|| opr == undefined || 
+    numOne == NaN || numTwo == NaN || opr == NaN || 
+    numOne == ''|| numTwo == '' || opr == '' 
+  ) {
+    clearDisplay();
+    writeHistory('ERROR');
+    return 'ERROR';
+  }
+  return operate(parseInt(numOne), parseInt(numTwo), opr);
 };
 
 let btnPress = btn => {
@@ -30,12 +38,14 @@ let btnPress = btn => {
 
   if (value == '=' || numOperators == 2) {
     let ans = getAnswer();
-    writeHistory(ans);
-    clearDisplay();
-    writeDisplay(ans);
-    if (value != '=') {
-      writeDisplay(value);
-      numOperators += 1;
+    if (ans != 'ERROR') {
+      writeHistory(ans);
+      clearDisplay();
+      writeDisplay(ans);
+      if (value != '=') {
+        writeDisplay(value);
+        numOperators += 1;
+      }
     }
   } else {
     writeDisplay(value);
