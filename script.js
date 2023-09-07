@@ -57,45 +57,61 @@ function btnPress(btn) {
     clearDisplay();
 
   } else if (value == 'DEL') {
-    display.textContent = dv.slice(0, -1); 
+    display.textContent = display.textContent.slice(0, -1); 
+  } 
   
-  } else if (value == '=') {
-  
-    let dv = display.textContent.split('');
-    
-    for (i = 0; i < dv.length; i++) {
-      if (dv[i].search(/[\+\x\/]/) != -1) {
-        operator = dv[i];
-        numOne = dv.slice(0, i).join('');
-        numTwo = dv.slice(i+1,).join('');
-        numOperators += 1;
-      }
-      
-      else if (dv[i] == '-' && i != 0 && operator != '-') {
-        // minus
-        if (
-          !isNaN(dv[i-1]) && 
-          !isNaN(dv[i+1])
-        ) {
-          operator = '-'
-          numOne = dv.slice(0, i).join('');
-          numTwo = dv.slice(i+1,).join('');
-          numOperators += 1;
+  let dv = display.textContent;
 
-        // second num neg
-        } else {
-          operator = dv[i-1];
-          numOne = dv.slice(0, i-1).join('');
-          numTwo = dv.slice(i,).join('');
-        } 
-      }
+  // operator search display
+  let oprInd = dv.search(/[\+\x\/]/);
+  if (oprInd != -1) {
+    operator = dv[oprInd];
+    numOne = dv.slice(0, oprInd);
+    numTwo = dv.slice(oprInd+1,);
+
+    // first operator
+    if (numOperators == 0) {
+      numOperators += 1;
+
+    // second operator
+    } else if (value.search(/[\+\x\/]/) != -1) {
+      numOperators += 1;
     }
   }
+
+  dv = display.textContent;
+
+  for (i = 0; i < dv.length; i++) {
+    if (
+      dv[i] == '-' && 
+      i != 0 && 
+      operator != '-'
+    ) {
+
+      // minus
+      if (
+        !isNaN(dv[i-1]) && 
+        !isNaN(dv[i+1])
+      ) {
+        operator = '-'
+        numOne = dv.slice(0, i);
+        numTwo = dv.slice(i+1,);
+        numOperators += 1;
+
+      // second num neg
+      } else {
+        operator = dv[i-1];
+        numOne = dv.slice(0, i-1);
+        numTwo = dv.slice(i,);
+      } 
+    }
+  }
+  
     
-  if (value == '=') {
+  if (value == '=' || numOperators == 2) {
     console.log(numOne);
     console.log(numTwo);
-    // console.log(numOperators);
+    console.log(numOperators);
     
     let ans = getAnswer();
 
