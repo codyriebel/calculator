@@ -7,7 +7,6 @@ let numOne = 0;
 let numTwo = 0;
 let operator = '';
 let numOperators = 0;
-let numMinus = 0;
 
 let display = document.querySelector('#display');
 
@@ -24,7 +23,6 @@ let clearDisplay = () => {
   numTwo = 0;
   operator = '';
   numOperators = 0;
-  numMinus = 0;
 };
 
 let writeHistory = ans => {
@@ -34,7 +32,7 @@ let writeHistory = ans => {
 
 let operate = (a, b, operator) => {
   if (operator == '+') return add(a, b);
-  else if (operator == 'minus') return subtract(a, b);
+  else if (operator == '-') return subtract(a, b);
   else if (operator == 'x') return multiply(a, b);
   else if (operator == '/') {
     if (b == 0) return 'zero division';
@@ -54,42 +52,50 @@ let getAnswer = () => {
 
 function btnPress(btn) {
   let value = btn.target.textContent;
-  let dv = display.textContent
-
-  numOperators = dv.search(/[\+\x\/]/g).length;
-
+  
   if (value == 'CLEAR') {
     clearDisplay();
 
   } else if (value == 'DEL') {
     display.textContent = dv.slice(0, -1); 
-
-  } else if (value == '-') {
-    // if first or second number neg
-    if (dv == '' || numOperators + numMinus > 0) return;
-    // if operator minus
-    else {
-      numOne = dv;
-      numMinus += 1;
-      operator = 'minus';
-    }
-
-    // if other operator
-  } else if (
-    value.search(/[\+\x\/]/) &&
-    numOperators == 0
-  ) {
-    operator = value;
-    numOperators += 1;
-
-  }
   
-  if (value == '=' || numOperators + numMinus == 2) {
-    if (numMinus > 0) {
-      numTwo = display.textContent.split('-')[1];
-    } else {
-      numTwo = display.textContent.split(operator)[1];
+  } else if (value == '=') {
+  
+    let dv = display.textContent.split('');
+    
+    for (i = 0; i < dv.length; i++) {
+      if (dv[i].search(/[\+\x\/]/) != -1) {
+        operator = dv[i];
+        numOne = dv.slice(0, i).join('');
+        numTwo = dv.slice(i+1,).join('');
+        numOperators += 1;
+      }
+      
+      else if (dv[i] == '-' && i != 0 && operator != '-') {
+        // minus
+        if (
+          !isNaN(dv[i-1]) && 
+          !isNaN(dv[i+1])
+        ) {
+          operator = '-'
+          numOne = dv.slice(0, i).join('');
+          numTwo = dv.slice(i+1,).join('');
+          numOperators += 1;
+
+        // second num neg
+        } else {
+          operator = dv[i-1];
+          numOne = dv.slice(0, i-1).join('');
+          numTwo = dv.slice(i,).join('');
+        } 
+      }
     }
+  }
+    
+  if (value == '=') {
+    console.log(numOne);
+    console.log(numTwo);
+    // console.log(numOperators);
     
     let ans = getAnswer();
 
@@ -110,5 +116,4 @@ function btnPress(btn) {
     writeDisplay(value);
   }
 
-  
 };
