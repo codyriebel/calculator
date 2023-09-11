@@ -7,6 +7,8 @@ let numOne = 0;
 let numTwo = 0;
 let operator = '';
 let numOperators = 0;
+let neg = 0;
+let ind = null;
 
 let display = document.querySelector('#display');
 
@@ -23,11 +25,31 @@ let clearDisplay = () => {
   numTwo = 0;
   operator = '';
   numOperators = 0;
+  neg = 0;
+  ind = null;
 };
 
-let writeHistory = ans => {
-  let expression = display.textContent;
-  document.querySelector('#history').textContent = `${expression} = ${ans}`;
+let del = () => {
+  let deleted = display.textContent.slice(-1);
+
+  display.textContent = display.textContent.slice(0, -1);
+
+  if (!/x|\+|-|\//.test(deleted)) {
+    return;
+  
+  } else if (deleted != '-') {
+    numOperators--;
+  
+  } else if (!neg == 0) {
+    neg--;
+  
+  } else  {
+    numOperators--;
+  }
+}
+
+let writeHistory = (before, ans) => {
+  document.querySelector('#history').textContent = `${before} = ${ans}`;
 };
 
 let operate = (a, b, operator) => {
@@ -41,95 +63,80 @@ let operate = (a, b, operator) => {
 };
 
 let getAnswer = () => {
-    let answer = operate(parseInt(numOne), parseInt(numTwo), operator);
+  let answer = operate(parseInt(numOne), parseInt(numTwo), operator);
 
-    if (answer == 'zero division') return 'nice try...';
-    if (!(isNaN(answer) || answer == null)) {
-      return Math.round(answer *  1000) / 1000;
-    }
-  return '';
+  if (answer == 'zero division') return 'nice try...';
+  if (isNaN(answer) || answer == null) {
+    return '';
+  }  
+  return Math.round(answer *  1000000) / 1000000;
 };
 
 function btnPress(btn) {
   let value = btn.target.textContent;
+  let classes = btn.target.classList;
+  let txt = display.textContent;
   
   if (value == 'CLEAR') {
     clearDisplay();
 
   } else if (value == 'DEL') {
-    display.textContent = display.textContent.slice(0, -1); 
-  } 
-  
-  let dv = display.textContent;
+    del();    
 
-  // operator search display
-  let oprInd = dv.search(/[\+\x\/]/);
-  if (oprInd != -1) {
-    operator = dv[oprInd];
-    numOne = dv.slice(0, oprInd);
-    numTwo = dv.slice(oprInd+1,);
+  } else if (classes.contains('operator')) {
+    numOperators++;
 
-    // first operator
-    if (numOperators == 0) {
-      numOperators += 1;
-
-    // second operator
-    } else if (value.search(/[\+\x\/]/) != -1) {
-      numOperators += 1;
-    }
-  }
-
-  dv = display.textContent;
-
-  for (i = 0; i < dv.length; i++) {
-    if (
-      dv[i] == '-' && 
-      i != 0 && 
-      operator != '-'
-    ) {
-
-      // minus
-      if (
-        !isNaN(dv[i-1]) && 
-        !isNaN(dv[i+1])
-      ) {
-        operator = '-'
-        numOne = dv.slice(0, i);
-        numTwo = dv.slice(i+1,);
-        numOperators += 1;
-
-      // second num neg
-      } else {
-        operator = dv[i-1];
-        numOne = dv.slice(0, i-1);
-        numTwo = dv.slice(i,);
-      } 
-    }
-  }
-  
-    
-  if (value == '=' || numOperators == 2) {
-    console.log(numOne);
-    console.log(numTwo);
-    console.log(numOperators);
-    
-    let ans = getAnswer();
-
-    writeHistory(ans);
-    clearDisplay();
-    writeDisplay(ans);
-
-    // if other operator
-    if (value != '=') {
+    if (numOperators == 1) {
       writeDisplay(value);
-      operator = value;
-      numOperators += 1;
-    } 
-    return;
-  }
+      operator = value; 
+    }
+    
+    if (value == '-' && ind == null) {
+      ind = txt.length;
+    }
+
+  } else if (value == '(-)') {
+      neg++;
+
+      let isPreviousNum = !isNaN(parseInt(txt.slice(-1)));
+
+      if (!isPreviousNum) {
+        writeDisplay('-');
+      
+      } else {
+        display.textContent = '-' + txt;
+      }
   
-  if (!(btn.target.classList.contains('fcn'))) {
+  } else if (value != ('=')) {
     writeDisplay(value);
   }
 
-};
+  if (!(value == '=' || numOperators == 2)) {
+    return;
+  }
+
+  let dv = display.textContent;
+  if (ind == null) {
+    ind = dv.indexOf(operator);
+  }
+  numOne = dv.slice(0, ind);
+  numTwo = dv.slice(ind+1, )
+
+  let ans = getAnswer();
+
+  writeHistory(txt, ans);
+  clearDisplay();
+  writeDisplay(ans);
+    
+  if (!classes.contains('operator')) {
+    return;
+  }
+
+  if (value == '-') {
+    ind = display.textContent.length;
+  }
+
+  writeDisplay(value);
+  numOperators++;
+  operator = value;
+}  
