@@ -10,16 +10,9 @@ let numOperators = 0;
 let neg = 0;
 let ind = null;
 
-let display = document.querySelector('#display');
+const display = document.querySelector('#display');
 
-let buttons = document.querySelectorAll('button');
-for (button of buttons) {
-  button.addEventListener('click', btnPress);
-}
-
-let writeDisplay = value => display.textContent += value;
-
-let clearDisplay = () => {
+let deleteDisplay = () => {
   display.textContent = '';
   numOne = 0;
   numTwo = 0;
@@ -29,30 +22,42 @@ let clearDisplay = () => {
   ind = null;
 };
 
-let del = () => {
-  let deleted = display.textContent.slice(-1);
+let clickButton = btn => {
+  const button = {
+    value: btn.target.textContent,
+    classes: btn.target.classList,
+  };
+  let txt = display.textContent;
+  startCalculatorFunctions(button, txt);
+}
 
+const buttons = document.querySelectorAll('button');
+for (let buttonElement of buttons) {
+  buttonElement.addEventListener('click', clickButton);
+}
+
+let appendDisplay = value => display.textContent += value;
+
+let deleteChar = () => {
+  let deleted = display.textContent.slice(-1);
   display.textContent = display.textContent.slice(0, -1);
 
   if (!/x|\+|-|\//.test(deleted)) {
     return;
-  
   } else if (deleted != '-') {
     numOperators--;
-  
   } else if (!neg == 0) {
     neg--;
-  
   } else  {
     numOperators--;
   }
 }
 
-let writeHistory = (before, ans) => {
+let changeHistory = (before, ans) => {
   document.querySelector('#history').textContent = `${before} = ${ans}`;
 };
 
-let operate = (a, b, operator) => {
+let getOperation = (a, b, operator) => {
   if (operator == '+') return add(a, b);
   else if (operator == '-') return subtract(a, b);
   else if (operator == 'x') return multiply(a, b);
@@ -63,7 +68,7 @@ let operate = (a, b, operator) => {
 };
 
 let getAnswer = () => {
-  let answer = operate(parseInt(numOne), parseInt(numTwo), operator);
+  let answer = getOperation(parseInt(numOne), parseInt(numTwo), operator);
 
   if (answer == 'zero division') return 'nice try...';
   if (isNaN(answer) || answer == null) {
@@ -72,49 +77,33 @@ let getAnswer = () => {
   return Math.round(answer *  1000000) / 1000000;
 };
 
-function btnPress(btn) {
-  let value = btn.target.textContent;
-  let classes = btn.target.classList;
-  let txt = display.textContent;
+let updateOperators = (opr, textDisplayed) => {
+  if (numOperators == 0) {
+    appendDisplay(opr);
+    operator = opr; 
   
-  if (value == 'CLEAR') {
-    clearDisplay();
-
-  } else if (value == 'DEL') {
-    del();    
-
-  } else if (classes.contains('operator')) {
-    numOperators++;
-
-    if (numOperators == 1) {
-      writeDisplay(value);
-      operator = value; 
-    }
-    
-    if (value == '-' && ind == null) {
-      ind = txt.length;
-    }
-
-  } else if (value == '(-)') {
-      neg++;
-
-      let isPreviousNum = !isNaN(parseInt(txt.slice(-1)));
-
-      if (!isPreviousNum) {
-        writeDisplay('-');
-      
-      } else {
-        display.textContent = '-' + txt;
-      }
-  
-  } else if (value != ('=')) {
-    writeDisplay(value);
-  }
-
-  if (!(value == '=' || numOperators == 2)) {
+  // secondary subtraction
+  } else if (opr == '-') {
     return;
   }
 
+  // single subtraction
+  if (opr == '-' && ind == null) {
+    ind = textDisplayed.length;
+  }
+}
+
+let addNeg = textDisplayed => {
+  let isPreviousNum = !isNaN(parseInt(textDisplayed.slice(-1)));
+
+  if (!isPreviousNum) {
+    appendDisplay('-');
+  } else {
+    display.textContent = '-' + textDisplayed;
+  }
+}
+
+let startCalculation = (btn, textDisplayed) => {
   let dv = display.textContent;
   if (ind == null) {
     ind = dv.indexOf(operator);
@@ -124,19 +113,40 @@ function btnPress(btn) {
 
   let ans = getAnswer();
 
-  writeHistory(txt, ans);
-  clearDisplay();
-  writeDisplay(ans);
+  changeHistory(textDisplayed, ans);
+  deleteDisplay();
+  appendDisplay(ans);
     
-  if (!classes.contains('operator')) {
+  if (!btn.classes.contains('operator')) {
     return;
   }
+  
+  appendDisplay(btn.value);
+  numOperators++;
+  operator = btn.value;
+}  
 
-  if (value == '-') {
-    ind = display.textContent.length;
+let startCalculatorFunctions = (btn, textDisplayed) => {
+  if (btn.value == 'CLEAR') {
+    deleteDisplay();
+
+  } else if (btn.value == 'DEL') {
+    deleteChar();    
+
+  } else if (btn.classes.contains('operator')) {
+    updateOperators(btn.value, textDisplayed);
+    numOperators++;
+    
+  } else if (btn.value == '(-)') {
+      addNeg(textDisplayed)
+      neg++;
+
+  } else if (btn.value != ('=')) {
+    appendDisplay(btn.value);
   }
 
-  writeDisplay(value);
-  numOperators++;
-  operator = value;
-}  
+  if (btn.value == '=' || numOperators == 2) {
+    startCalculation(btn, textDisplayed);
+  }
+}
+
