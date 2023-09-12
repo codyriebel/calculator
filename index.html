@@ -3,41 +3,38 @@
   <head>
     <meta charset="UTF-8">
     <title>Calculator</title>
+    <link rel="stylesheet" href="style.css">
   </head>
   <body>
-    <div id="calculatorContainer">
-      <div id="history"></div>
-      <div id="display"></div>
-      <div>
+    <div class="container">
+      <div class="calculator">
+        <div class="history"></div>
+        <div class="display"></div> 
+
         <button>7</button>
         <button>8</button>
         <button>9</button>
-        <button class="fcn">CLEAR</button>
-        <button class="fcn">DEL</button>
-      </div>
-      <div>
+        <button class="fcn clear">CLR</button>
+        <button class="fcn delete">DEL</button>
+
         <button>4</button>
         <button>5</button>
         <button>6</button>
         <button class="operator">x</button>
         <button class="operator">/</button>
 
-      </div>
-      <div>
         <button>1</button>
         <button>2</button>
         <button>3</button>
         <button class="operator">+</button>
         <button class="operator">-</button>
-      </div>
-      <div>
+
         <button>0</button>
         <button>.</button>
-        <button class="fcn">(-)</button>
-        <button class="fcn">=</button>
+        <button class="fcn neg">(-)</button>
+        <button class="fcn equals">=</button>
+
       </div>
-
-
     </div>
   </body>
   <script src="script.js"></script>

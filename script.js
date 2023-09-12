@@ -10,7 +10,7 @@ let numOperators = 0;
 let neg = 0;
 let ind = null;
 
-const display = document.querySelector('#display');
+const display = document.querySelector('.display');
 
 let deleteDisplay = () => {
   display.textContent = '';
@@ -54,7 +54,7 @@ let deleteChar = () => {
 }
 
 let changeHistory = (before, ans) => {
-  document.querySelector('#history').textContent = `${before} = ${ans}`;
+  document.querySelector('.history').textContent = `${before} = ${ans}`;
 };
 
 let getOperation = (a, b, operator) => {
@@ -68,13 +68,13 @@ let getOperation = (a, b, operator) => {
 };
 
 let getAnswer = () => {
-  let answer = getOperation(parseInt(numOne), parseInt(numTwo), operator);
+  let answer = getOperation(parseFloat(numOne), parseFloat(numTwo), operator);
 
   if (answer == 'zero division') return 'nice try...';
   if (isNaN(answer) || answer == null) {
     return '';
   }  
-  return Math.round(answer *  1000000) / 1000000;
+  return Math.round(answer.toFixed(4)*10000)/10000;
 };
 
 let updateOperators = (opr, textDisplayed) => {
@@ -127,7 +127,7 @@ let startCalculation = (btn, textDisplayed) => {
 }  
 
 let startCalculatorFunctions = (btn, textDisplayed) => {
-  if (btn.value == 'CLEAR') {
+  if (btn.value == 'CLR') {
     deleteDisplay();
 
   } else if (btn.value == 'DEL') {
