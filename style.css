@@ -1,8 +1,9 @@
 body {
   font-family: Arial, Helvetica, sans-serif;
-  font-size: 40px;
+  font-size: 35px;
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+  align-items: center;
   background-color: rgb(29, 142, 177);
 }
 
@@ -16,13 +17,10 @@ button {
 }
 
 .container {
-  display: flex;
-  justify-content: center;
   border: solid 5px rgba(0, 0, 0, 0.048);
   border-radius: 20px;
   padding: 30px;
-  margin: 100px 25%;
-  width: 400px;
+  margin: 100px 25% 50px;
   background-color: rgba(209, 214, 216, 0.856);
 }
 
@@ -30,23 +28,22 @@ button {
   display: grid;
   grid-template: repeat(6, 1fr) / repeat(5, 1fr);
   height: 600px;
-  gap: 10px 10px;
+  gap: 10px;
+  padding: 0 0 20px;
 }
 
 .equals {
   grid-column: span 2;
 }
 
-.display,
-.history {
+.history, .display {
+  grid-column: span 5;
   border: solid 3px rgba(0, 0, 0, 0.445);
   border-radius: 20px;
-  grid-column: span 5;
-  display: flex;
-  align-items: center;
-  margin: 10px 0;
+  margin: 8px 0;
   padding: 10px;
   background-color: rgb(233, 233, 233);
+  word-wrap: break-word;
 }
 
 .fcn.neg {
@@ -59,4 +56,9 @@ button {
 
 .fcn {
   background-color: rgba(86, 198, 226, 0.822);
+}
+
+.footer {
+  text-align: center;
+  color: white;
 }
