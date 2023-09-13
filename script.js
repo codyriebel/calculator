@@ -23,18 +23,40 @@ let deleteDisplay = () => {
 };
 
 let clickButton = btn => {
-  const button = {
-    value: btn.target.textContent,
-    classes: btn.target.classList,
-  };
-  let txt = display.textContent;
-  startCalculatorFunctions(button, txt);
-}
+  let value = btn.target.textContent;
+  let isOperator = btn.target.classList.contains('operator')
+  startCalculatorFunctions(value, isOperator);
+};
 
 const buttons = document.querySelectorAll('button');
 for (let buttonElement of buttons) {
   buttonElement.addEventListener('click', clickButton);
 }
+
+let keyHandler = key => {
+  let isOperator = /x|\+|-|\//.test(key.key);
+
+  let isNum = parseInt(key.key);
+
+  let isEquals = key.key == '=';
+
+  let isDot = key.key == '.';
+
+  if (isOperator || isNum || isEquals || isDot) {
+    startCalculatorFunctions(key.key, isOperator);
+  }
+
+  if (key.key == 'Enter') {
+    startCalculatorFunctions('=', isOperator);
+  }
+
+  if (key.key == 'Backspace') {
+    startCalculatorFunctions('DEL', isOperator);
+  }
+  
+};
+
+window.addEventListener('keydown', keyHandler);
 
 let appendDisplay = value => display.textContent += value;
 
@@ -51,7 +73,7 @@ let deleteChar = () => {
   } else  {
     numOperators--;
   }
-}
+};
 
 let changeHistory = (before, ans) => {
   document.querySelector('.history').textContent = `${before} = ${ans}`;
@@ -91,7 +113,7 @@ let updateOperators = (opr, textDisplayed) => {
   if (opr == '-' && ind == null) {
     ind = textDisplayed.length;
   }
-}
+};
 
 let addNeg = textDisplayed => {
   let isPreviousNum = !isNaN(parseInt(textDisplayed.slice(-1)));
@@ -101,9 +123,9 @@ let addNeg = textDisplayed => {
   } else {
     display.textContent = '-' + textDisplayed;
   }
-}
+};
 
-let startCalculation = (btn, textDisplayed) => {
+let startCalculation = (val, isOperator, textDisplayed) => {
   let dv = display.textContent;
   if (ind == null) {
     ind = dv.indexOf(operator);
@@ -117,36 +139,37 @@ let startCalculation = (btn, textDisplayed) => {
   deleteDisplay();
   appendDisplay(ans);
     
-  if (!btn.classes.contains('operator')) {
+  if (!isOperator) {
     return;
   }
   
-  appendDisplay(btn.value);
+  appendDisplay(val);
   numOperators++;
-  operator = btn.value;
-}  
+  operator = val;
+};
 
-let startCalculatorFunctions = (btn, textDisplayed) => {
-  if (btn.value == 'CLR') {
+let startCalculatorFunctions = (val, isOperator) => {
+  let textDisplayed = display.textContent;
+
+  if (val == 'CLR') {
     deleteDisplay();
 
-  } else if (btn.value == 'DEL') {
+  } else if (val == 'DEL') {
     deleteChar();    
 
-  } else if (btn.classes.contains('operator')) {
-    updateOperators(btn.value, textDisplayed);
+  } else if (isOperator) {
+    updateOperators(val, textDisplayed);
     numOperators++;
     
-  } else if (btn.value == '(-)') {
+  } else if (val == '(-)') {
       addNeg(textDisplayed)
       neg++;
 
-  } else if (btn.value != ('=')) {
-    appendDisplay(btn.value);
+  } else if (val != ('=')) {
+    appendDisplay(val);
   }
 
-  if (btn.value == '=' || numOperators == 2) {
-    startCalculation(btn, textDisplayed);
+  if (val == '=' || numOperators == 2) {
+    startCalculation(val, isOperator,textDisplayed);
   }
-}
-
+};
