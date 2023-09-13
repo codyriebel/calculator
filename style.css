@@ -20,8 +20,9 @@ button {
   border: solid 5px rgba(0, 0, 0, 0.048);
   border-radius: 20px;
   padding: 30px;
-  margin: 100px 25% 50px;
+  margin: 20px 25% 20px;
   background-color: rgba(209, 214, 216, 0.856);
+  height: 500px;
 }
 
 .calculator {
@@ -29,14 +30,13 @@ button {
   grid-template: repeat(6, 1fr) / repeat(5, 1fr);
   height: 600px;
   gap: 10px;
-  padding: 0 0 20px;
 }
 
 .equals {
   grid-column: span 2;
 }
 
-.history, .display {
+.screen {
   grid-column: span 5;
   border: solid 3px rgba(0, 0, 0, 0.445);
   border-radius: 20px;
@@ -44,18 +44,27 @@ button {
   padding: 10px;
   background-color: rgb(233, 233, 233);
   word-wrap: break-word;
+  min-height: 70px;
+}
+
+.history {
+  font-size: 25px;
+  color:rgb(104, 104, 104)
 }
 
 .fcn.neg {
-  background-color: rgb(233, 233, 233);  
+  background-color: rgb(233, 233, 233); 
+  font-size: 18px; 
 }
 
 .operator {
   background-color: rgba(80, 148, 238, 0.425);
+  font-size: 20px;
 }
 
 .fcn {
   background-color: rgba(86, 198, 226, 0.822);
+  font-size: 20px;
 }
 
 .footer {
