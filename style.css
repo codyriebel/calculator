@@ -7,6 +7,39 @@ body {
   background-color: rgb(29, 142, 177);
 }
 
+.container {
+  display: flex;
+  flex-direction: column;
+  border: solid 5px rgba(0, 0, 0, 0.048);
+  border-radius: 20px;
+  padding: 30px;
+  margin: 20px 25%;
+  background-color: rgba(209, 214, 216, 0.856);
+}
+
+.screen {
+  border: solid 3px rgba(0, 0, 0, 0.445);
+  border-radius: 20px;
+  margin: 8px 0 20px;
+  padding: 10px;
+  background-color: rgb(233, 233, 233);
+  word-wrap: break-word;
+  max-width: 370px;
+  flex: 2 0 120px;
+}
+
+.history {
+  font-size: 25px;
+  color:rgb(104, 104, 104)
+}
+
+.buttons {
+  display: grid;
+  grid-template: repeat(4, 1fr) / repeat(5, 1fr);
+  gap: 10px;
+
+}
+
 button {
   font-family: Arial, Helvetica, sans-serif;
   font-size: 25px;
@@ -16,39 +49,8 @@ button {
   padding: 15px;
 }
 
-.container {
-  border: solid 5px rgba(0, 0, 0, 0.048);
-  border-radius: 20px;
-  padding: 30px;
-  margin: 20px 25% 20px;
-  background-color: rgba(209, 214, 216, 0.856);
-  height: 425px;
-}
-
-.calculator {
-  display: grid;
-  grid-template: repeat(6, 1fr) / repeat(5, 1fr);
-  height: 500px;
-  gap: 10px;
-}
-
 .equals {
   grid-column: span 2;
-}
-
-.screen {
-  grid-column: span 5;
-  border: solid 3px rgba(0, 0, 0, 0.445);
-  border-radius: 20px;
-  margin: 8px 0;
-  padding: 10px;
-  background-color: rgb(233, 233, 233);
-  word-wrap: break-word;
-}
-
-.history {
-  font-size: 25px;
-  color:rgb(104, 104, 104)
 }
 
 .fcn.neg {
